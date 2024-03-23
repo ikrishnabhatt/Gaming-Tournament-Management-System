@@ -89,6 +89,7 @@ def view_tournaments():
     print("\n===== View Tournaments =====")
     c.execute("SELECT * FROM Tournaments")
     tournaments = c.fetchall()
+    print("\n ID, Name , Starting Date ,Ending Date \n")
     if tournaments:
         for tournament in tournaments:
             print(tournament)
@@ -106,6 +107,7 @@ def add_participant():
 def view_participants():  
     print("\n===== View Participants =====")
     tournament_id = int(input("Enter tournament ID: "))
+    print("\PlayerID, GameID, Name , Score \n")
     c.execute("SELECT * FROM Participants WHERE tournament_id = ?", (tournament_id,))
     participants = c.fetchall()
     if participants:
@@ -116,36 +118,33 @@ def view_participants():
 
 def remove_participant():
     print("\n===== Remove Participant =====")
-    gamer_id = int(input("Enter participant ID: "))
-    c.execute("DELETE FROM Participants WHERE gamer_id = ?", (gamer_id,))
+    participant_id = int(input("Enter participant ID: "))
+    c.execute("DELETE FROM Participants WHERE participant_id = ?", (participant_id,))
     conn.commit()
     print("Participant removed successfully!")
 
 def update_score():
     print("\n===== Update Participant Score =====")
-    gamer_id = int(input("Enter participant ID: "))
+    participant_id = int(input("Enter participant ID: "))
     score = int(input("Enter new score: "))
-    c.execute("UPDATE Participants SET score = ? WHERE gamer_id = ?", (score, gamer_id))
+    c.execute("UPDATE Participants SET score = ? WHERE participant_id = ?", (score, participant_id))
     conn.commit()
     print("Score updated successfully!")
 
 def record_result():
     print("\n===== Record Result =====")
     tournament_id = int(input("Enter tournament ID: "))
-    participant1_id = int(input("Enter participant 1 ID: "))
-    participant2_id = int(input("Enter participant 2 ID: "))
-    participant1_score = int(input("Enter participant 1 score: "))
-    participant2_score = int(input("Enter participant 2 score: "))
-    
-    c.execute("UPDATE Participants SET score = score + ? WHERE gamer_id = ?", (participant1_score, participant1_id))
-    
-    c.execute("UPDATE Participants SET score = score + ? WHERE gamer_id = ?", (participant2_score, participant2_id))
-    
-    c.execute("INSERT INTO MatchResults (tournament_id, participant1_id, participant2_id, participant1_score, participant2_score) VALUES (?, ?, ?, ?, ?)",
-              (tournament_id, participant1_id, participant2_id, participant1_score, participant2_score))
-    
+    num_participants = int(input("Enter the number of participants in the match: "))
+
+    match_data = []
+    for i in range(num_participants):
+        participant_id = int(input(f"Enter participant {i+1} ID: "))
+        participant_score = int(input(f"Enter participant {i+1} score: "))
+        match_data.append((tournament_id, participant_id, participant_score))
+    c.executemany("INSERT INTO MatchResults (tournament_id, participant1_id, participant1_score) VALUES (?, ?, ?)", match_data)
     conn.commit()
     print("Result recorded successfully!")
+
 
 def view_results():
     print("\n===== View Results =====")
@@ -153,10 +152,20 @@ def view_results():
     
     c.execute("SELECT * FROM MatchResults WHERE tournament_id = ?", (tournament_id,))
     results = c.fetchall()
+    
     if results:
         print("Match Results:")
         for result in results:
-            print(f"Tournament ID: {result[1]}, Participant 1 ID: {result[2]}, Participant 2 ID: {result[3]}, Participant 1 Score: {result[4]}, Participant 2 Score: {result[5]}")
+            print(f"Match ID: {result[0]}")
+            print("Participants:")
+            for i in range(1, len(result), 3):  
+                if i + 2 < len(result): 
+                    print(f"Participant ID: {result[i]}, Score: {result[i+1]}")
+                else:
+                    print("Incomplete participant data in the database.")
+                    break
+    else:
+        print("No match results found for this tournament.")
 
 while True:
     print("\n===== Game Tournament Management System =====")

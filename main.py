@@ -58,11 +58,11 @@ def menu():
     print("1. Create Tournament")
     print("2. View Tournaments")
     print("3. Add Participant")
-    print("8. View Participants")
+    print("4. View Participants")
     print("5. Remove Participant")
-    print("4. Update Participant Score")
-    print("7. View Results")
-    print("6. Record Result")
+    print("6. Update Participant Score")
+    print("7. Record Result")
+    print("8. View Results")
     print("9. Logout")
     choice = input("Enter your choice: ")
     return choice
@@ -180,11 +180,11 @@ while True:
                 elif choice == '5':
                     remove_participant()
                 elif choice == '6':
-                    record_result()
-                elif choice == '7':
-                    view_results()
-                elif choice == '8':
                     update_score()
+                elif choice == '7':
+                    record_result()
+                elif choice == '8':
+                    view_results()
                 elif choice == '9':
                     print("Logging out...")
                     break

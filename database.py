@@ -7,29 +7,29 @@ class Database:
         self.create_tables()
 
     def create_tables(self):
-        # Create Users table
+        # Users table
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS Users (
-                                id sINTEGER PRIMARY KEY,
-                                username TEXT UNIQUE,
-                                password TEXT
-                            )''')
+                            id INTEGER PRIMARY KEY,
+                            username TEXT UNIQUE,
+                            password TEXT
+                        )''')
 
-        # Create Tournaments table
+        # Tournaments table
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS Tournaments (
-                                id INTEGER PRIMARY KEY,
-                                tournament_name TEXT UNIQUE,
-                                start_date TEXT,
-                                end_date TEXT
-                            )''')
+                            id INTEGER PRIMARY KEY,
+                            tournament_name TEXT UNIQUE,
+                            start_date TEXT,
+                            end_date TEXT
+                        )''')
 
-        # Create Participants table
+        # Participants table
         self.cursor.execute('''CREATE TABLE IF NOT EXISTS Participants (
-                                id INTEGER PRIMARY KEY,
-                                tournament_id INTEGER,
-                                participant_name TEXT,
-                                score INTEGER,
-                                FOREIGN KEY (tournament_id) REFERENCES Tournaments(id)
-                            )''')
+                            id INTEGER PRIMARY KEY,
+                            tournament_id INTEGER,
+                            participant_name TEXT,
+                            score INTEGER,
+                            FOREIGN KEY (tournament_id) REFERENCES Tournaments(id)
+                        )''')
 
         self.conn.commit()
 
@@ -57,8 +57,8 @@ class Database:
         self.cursor.execute("SELECT * FROM Participants WHERE tournament_id=?", (tournament_id,))
         return self.cursor.fetchall()
 
-    def update_participant_score(self, participant_id, new_score):
-        self.cursor.execute("UPDATE Participants SET score=? WHERE id=?", (new_score, participant_id))
+    def update_participant_score(self, gamer_id, new_score):
+        self.cursor.execute("UPDATE Participants SET score=? WHERE gamer_id=?", (new_score, gamer_id))
         self.conn.commit()
 
     def close(self):

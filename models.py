@@ -38,7 +38,7 @@ class Tournament:
         if tournament_data:
             return Tournament(tournament_data[1], tournament_data[2], tournament_data[3])
         return None
-
+        
 class Participant:
     def __init__(self, tournament_id, participant_name, score=0):
         self.tournament_id = tournament_id
@@ -63,5 +63,5 @@ class Participant:
     def update_score(self, new_score):
         self.score = new_score
         db = Database("tournament.db")
-        db.update_participant_score(self.id, self.score)
+        db.update_participant_score(self.tournament_id, self.score)
         db.close()

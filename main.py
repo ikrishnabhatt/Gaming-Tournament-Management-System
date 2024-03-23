@@ -2,24 +2,22 @@ import sqlite3
 import hashlib
 from getpass import getpass
 
-# Database connection
 conn = sqlite3.connect('tournament.db')
 c = conn.cursor()
 
-# Create tables if they don't exist
 c.execute('''CREATE TABLE IF NOT EXISTS Users (
                 user_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 username TEXT UNIQUE,
                 password TEXT)''')
 
 c.execute('''CREATE TABLE IF NOT EXISTS Tournaments (
-                    tournament_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tournament_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 tournament_name TEXT,
                 start_date TEXT,
                 end_date TEXT)''')
 
 c.execute('''CREATE TABLE IF NOT EXISTS Participants (
-                participant_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                gamer_id INTEGER PRIMARY KEY AUTOINCREMENT,
                 tournament_id INTEGER,
                 participant_name TEXT,
                 score INTEGER,
@@ -33,9 +31,8 @@ c.execute('''CREATE TABLE IF NOT EXISTS MatchResults (
                 participant1_score INTEGER,
                 participant2_score INTEGER,
                 FOREIGN KEY (tournament_id) REFERENCES Tournaments(tournament_id),
-                FOREIGN KEY (participant1_id) REFERENCES Participants(participant_id),
-                FOREIGN KEY (participant2_id) REFERENCES Participants(participant_id))''')
-
+                FOREIGN KEY (participant1_id) REFERENCES Participants(gamer_id),
+                FOREIGN KEY (participant2_id) REFERENCES Participants(gamer_id))''')
 
 conn.commit()
 
@@ -119,16 +116,16 @@ def view_participants():
 
 def remove_participant():
     print("\n===== Remove Participant =====")
-    participant_id = int(input("Enter participant ID: "))
-    c.execute("DELETE FROM Participants WHERE participant_id = ?", (participant_id,))
+    gamer_id = int(input("Enter participant ID: "))
+    c.execute("DELETE FROM Participants WHERE gamer_id = ?", (gamer_id,))
     conn.commit()
     print("Participant removed successfully!")
 
 def update_score():
     print("\n===== Update Participant Score =====")
-    participant_id = int(input("Enter participant ID: "))
+    gamer_id = int(input("Enter participant ID: "))
     score = int(input("Enter new score: "))
-    c.execute("UPDATE Participants SET score = ? WHERE participant_id = ?", (score, participant_id))
+    c.execute("UPDATE Participants SET score = ? WHERE gamer_id = ?", (score, gamer_id))
     conn.commit()
     print("Score updated successfully!")
 
@@ -140,33 +137,27 @@ def record_result():
     participant1_score = int(input("Enter participant 1 score: "))
     participant2_score = int(input("Enter participant 2 score: "))
     
-    # Update scores for participant 1
-    c.execute("UPDATE Participants SET score = score + ? WHERE participant_id = ?", (participant1_score, participant1_id))
+    c.execute("UPDATE Participants SET score = score + ? WHERE gamer_id = ?", (participant1_score, participant1_id))
     
-    # Update scores for participant 2
-    c.execute("UPDATE Participants SET score = score + ? WHERE participant_id = ?", (participant2_score, participant2_id))
+    c.execute("UPDATE Participants SET score = score + ? WHERE gamer_id = ?", (participant2_score, participant2_id))
     
-    # Add match details to a new table or log file, if required
+    c.execute("INSERT INTO MatchResults (tournament_id, participant1_id, participant2_id, participant1_score, participant2_score) VALUES (?, ?, ?, ?, ?)",
+              (tournament_id, participant1_id, participant2_id, participant1_score, participant2_score))
     
     conn.commit()
     print("Result recorded successfully!")
-
 
 def view_results():
     print("\n===== View Results =====")
     tournament_id = int(input("Enter tournament ID: "))
     
-    # Fetch match results for the specified tournament
     c.execute("SELECT * FROM MatchResults WHERE tournament_id = ?", (tournament_id,))
     results = c.fetchall()
     if results:
         print("Match Results:")
         for result in results:
-            print(f"Participant 1 ID: {result[1]}, Participant 2 ID: {result[2]}, Participant 1 Score: {result[3]}, Participant 2 Score: {result[4]}")
-    else:
-        print("No match results found for this tournament.")
+            print(f"Tournament ID: {result[1]}, Participant 1 ID: {result[2]}, Participant 2 ID: {result[3]}, Participant 1 Score: {result[4]}, Participant 2 Score: {result[5]}")
 
-# Main program
 while True:
     print("\n===== Game Tournament Management System =====")
     print("1. Register")

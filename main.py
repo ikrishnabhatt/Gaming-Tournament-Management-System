@@ -25,6 +25,18 @@ c.execute('''CREATE TABLE IF NOT EXISTS Participants (
                 score INTEGER,
                 FOREIGN KEY (tournament_id) REFERENCES Tournaments(tournament_id))''')
 
+c.execute('''CREATE TABLE IF NOT EXISTS MatchResults (
+                result_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tournament_id INTEGER,
+                participant1_id INTEGER,
+                participant2_id INTEGER,
+                participant1_score INTEGER,
+                participant2_score INTEGER,
+                FOREIGN KEY (tournament_id) REFERENCES Tournaments(tournament_id),
+                FOREIGN KEY (participant1_id) REFERENCES Participants(participant_id),
+                FOREIGN KEY (participant2_id) REFERENCES Participants(participant_id))''')
+
+
 conn.commit()
 
 def register():
@@ -147,7 +159,6 @@ def view_results():
     # Fetch match results for the specified tournament
     c.execute("SELECT * FROM MatchResults WHERE tournament_id = ?", (tournament_id,))
     results = c.fetchall()
-    
     if results:
         print("Match Results:")
         for result in results:

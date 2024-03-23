@@ -122,8 +122,6 @@ def update_score():
 
 def record_result():
     print("\n===== Record Result =====")
-    def record_result():
-    print("\n===== Record Result =====")
     tournament_id = int(input("Enter tournament ID: "))
     participant1_id = int(input("Enter participant 1 ID: "))
     participant2_id = int(input("Enter participant 2 ID: "))
@@ -143,8 +141,6 @@ def record_result():
 
 
 def view_results():
-    print("\n===== View Results =====")
-    def view_results():
     print("\n===== View Results =====")
     tournament_id = int(input("Enter tournament ID: "))
     

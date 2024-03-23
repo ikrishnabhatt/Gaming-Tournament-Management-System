@@ -1,0 +1,22 @@
+# Game Tournament Management System
+
+This is a Game Tournament Management System designed to facilitate the organization and management of gaming tournaments. The system allows users to create tournaments, add participants, record match results, and view tournament standings.
+
+# Features
+
+- User Authentication: Secure user authentication system for login and registration.
+- Tournament Management: Create, view, and manage tournaments with start and end dates.
+- Participant Management: Add, update, and remove participants from tournaments.
+- Result Tracking: Record match results and update participant scores.
+- Console Interface: Simple console- based user interface for ease of interaction.
+- Database Integration: Utilizes SQLite database for data storage and management.
+- Error Handling: Comprehensive error handling to ensure smooth operation.
+
+# Getting Started
+
+Follow these instructions to set up and run the Game Tournament Management System on your local machine.
+
+# Prerequisites
+
+- Python 3.x
+- SQLite3
